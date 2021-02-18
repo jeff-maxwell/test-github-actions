@@ -31,6 +31,14 @@ jobs:
       run: dotnet test --no-build --verbosity normal
     - name: Publish
       run: dotnet publish -c Release -o '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}'
+    - name: 'Deploy to Azure WebApp'
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: 'jefftestgithubactions'
+        slot-name: ${{ env.SLOT_NAME }}  
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+        package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+
 
   DeployQA:
     name: Deploy to QA
@@ -42,12 +50,7 @@ jobs:
       url: 'https://jefftestgithubactions.azurewebsites.net'
     steps:
     - name: 'Deploy to Azure WebApp'
-      uses: azure/webapps-deploy@v2
-      with:
-        app-name: 'jefftestgithubactions'
-        slot-name: ${{ env.SLOT_NAME }}  
-        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-        package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+      run: echo Deployed QA    
           
   DeployUAT:
     name: Deploy to UAT
