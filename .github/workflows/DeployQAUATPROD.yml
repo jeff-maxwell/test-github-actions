@@ -76,7 +76,7 @@ jobs:
         path: ./Package/'
     
     - name: Display structure of downloaded files
-      run: ls -R
+      run: dir
       working-directory: '.Package/release-github-test'
     
     - name: Login to Azure
