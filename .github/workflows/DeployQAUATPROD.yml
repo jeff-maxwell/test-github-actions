@@ -43,7 +43,7 @@ jobs:
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v2.2.2
       with:
-        name: upload-release
+        name: release-github-test
         path: './Package/'
         
     - name: Login to Azure
@@ -68,6 +68,17 @@ jobs:
       name: UAT  
       url: 'https://jefftestgithubactionsuat.azurewebsites.net'
     steps:
+    - uses: actions/checkout@v2
+
+    - uses: actions/download-artifact@v2
+      with:
+        name: release-github-test
+        path: ./Package/'
+    
+    - name: Display structure of downloaded files
+      run: ls -R
+      working-directory: '.Package'
+    
     - name: Login to Azure
       uses: azure/login@v1
       with:
