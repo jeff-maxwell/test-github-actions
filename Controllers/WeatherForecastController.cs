@@ -31,7 +31,8 @@ namespace test_github_actions.Controllers
             {
                 Date = DateTime.Now.AddDays(index),
                 TemperatureC = rng.Next(-20, 55),
-                Summary = Summaries[rng.Next(Summaries.Length)]
+                Summary = Summaries[rng.Next(Summaries.Length)],
+                Message = "Hello"
             })
             .ToArray();
         }
