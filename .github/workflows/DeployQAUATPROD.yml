@@ -1,4 +1,4 @@
-name: .NET
+name: QA-UAT-PROD Workflow
 
 on:
   push:
@@ -6,20 +6,69 @@ on:
   pull_request:
     branches: [ main ]
 
-jobs:
-  build:
+env:
+  AZURE_WEBAPP_PACKAGE_PATH: './Package'
+  DOTNET_VERSION: '5.0.x'
+  SLOT_NAME: 'production'
+  BRANCH: 'main'
 
-    runs-on: ubuntu-latest
+jobs:
+  Build:
+
+    runs-on: windows-latest
 
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 5.0.x
+        dotnet-version: ${{ env.DOTNET_VERSION }} 
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
       run: dotnet build --no-restore
     - name: Test
       run: dotnet test --no-build --verbosity normal
+    - name: Publish
+      run: dotnet publish -c Release -o '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}'
+
+  DeployQA:
+    name: Deploy to QA
+    if: github.event.ref == 'refs/heads/main'
+    needs: [Build]
+    runs-on: windows-latest
+    environment:
+      name: QA  
+      url: 'https://jefftestgithubactions.azurewebsites.net'
+    steps:
+    - name: 'Deploy to Azure WebApp'
+      uses: azure/webapps-deploy@v2
+      with:
+        app-name: 'jefftestgithubactions'
+        slot-name: ${{ env.SLOT_NAME }}  
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+        package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+          
+  DeployUAT:
+    name: Deploy to UAT
+    if: github.event.ref == 'refs/heads/main'
+    needs: [DeployQA]
+    runs-on: windows-latest
+    environment:
+      name: UAT  
+      url: 'https://jefftestgithubactionsuat.azurewebsites.net'
+    steps:
+      - name: 'Deploy to Azure WebApp'
+        run: echo Deployed UAT     
+      
+  DeployProduction:
+    name: Deploy to Production
+    if: github.event.ref == 'refs/heads/main'
+    needs: [DeployUAT]
+    runs-on: windows-latest
+    environment:
+      name: Production  
+      url: 'https://jefftestgithubactionsprod.azurewebsites.net'
+    steps:
+      - name: 'Deploy to Azure WebApp'
+        run: echo Deployed Production     
