@@ -40,6 +40,11 @@ jobs:
     - name: Publish
       run: dotnet publish -c Release -o 'Package'
       
+    - name: List
+      run: |
+        ls -R
+        ls -R Package
+      
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v2.2.2
       with:
