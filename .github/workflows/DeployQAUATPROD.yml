@@ -40,10 +40,10 @@ jobs:
     - name: Publish
       run: dotnet publish -c Release -o 'Package'
       
-    - name: List
-      run: |
-        ls -R
-        ls -R Package
+#    - name: List
+#      run: |
+#        ls -R
+#        ls -R Package
       
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v2.2.2
@@ -51,10 +51,10 @@ jobs:
         name: release-github-test
         path: './Package/'
         
-    - name: Login to Azure
-      uses: azure/login@v1
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
+#    - name: Login to Azure
+#      uses: azure/login@v1
+#      with:
+#        creds: ${{ secrets.AZURE_CREDENTIALS }}
         
     - name: 'Deploy to Azure WebApp'
       uses: azure/webapps-deploy@v2
@@ -80,15 +80,16 @@ jobs:
         name: release-github-test
         path: ./Package
     
-    - name: List
-      run: |
-        ls -R
-        ls -R Package
+#    - name: List
+#      run: |
+#        ls -R
+#        ls -R Package
     
-    - name: Login to Azure
-      uses: azure/login@v1
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
+#    - name: Login to Azure
+#      uses: azure/login@v1
+#      with:
+#        creds: ${{ secrets.AZURE_CREDENTIALS }}
+        
     - name: 'Deploy to Azure WebApp'
       uses: azure/webapps-deploy@v2
       with:
