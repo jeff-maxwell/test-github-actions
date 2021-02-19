@@ -84,7 +84,7 @@ jobs:
         app-name: 'jefftestgithubactionsuat'
         slot-name: ${{ env.SLOT_NAME }}  
         publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-        package: '$(Pipeline.Workspace)/release-github-test'
+        package: $(Pipeline.Workspace)/release-github-test
       
   DeployProduction:
     name: Deploy to Production
